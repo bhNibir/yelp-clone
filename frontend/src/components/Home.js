@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 
 function Home(props) {
   // Set up state
@@ -24,11 +24,7 @@ function Home(props) {
     fetchData()
   }, [])
 
-  // Functions
-  async function handleEdit(id) {
-    history.push(`/restaurant/update/${id}`)
-  }
-
+  // Handles Delete Button Click
   async function handleDelete(id) {
     const confirm = window.confirm('Are you sure you want to delete this post?')
     if (confirm) {
@@ -61,20 +57,9 @@ function Home(props) {
               <div>Price Range: {restaurant.pricerange}</div>
               <div>Rating: {restaurant.rating}</div>
               <div>Rating Count: {restaurant.count}</div>
-              <button
-                onClick={() => {
-                  handleEdit(restaurant.id)
-                }}
-              >
-                Edit Restaurant
-              </button>
-              <button
-                onClick={() => {
-                  handleDelete(restaurant.id)
-                }}
-              >
-                Delete Restaurant
-              </button>
+              <Link to={`/restaurant/${restaurant.id}`}>View Details</Link>
+              <Link to={`/restaurant/${restaurant.id}/update`}>Edit Restaurant</Link>
+              <button onClick={() => handleDelete(restaurant.id)}>Delete Restaurant</button>
               <br />
             </div>
           )

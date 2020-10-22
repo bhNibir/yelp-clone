@@ -14,7 +14,6 @@ function UpdateRestaurant(props) {
     async function fetchRestaurantData() {
       try {
         const response = await axios.get(`/restaurants/${id}`)
-        console.log(response)
         setRestaurant(response.data)
         setIsLoading(false)
       } catch (err) {
