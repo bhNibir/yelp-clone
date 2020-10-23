@@ -6,10 +6,13 @@ import Home from './components/Home'
 import UpdateRestaurant from './components/UpdateRestaurant'
 import RestaurantDetails from './components/RestaurantDetails'
 import PageNotFound from './components/PageNotFound'
+import Header from './components/Header'
+import Footer from './components/Footer'
 
 function App() {
   return (
     <BrowserRouter>
+      <Header />
       <Switch>
         <Route path="/" exact>
           <Home />
@@ -24,6 +27,7 @@ function App() {
           <PageNotFound />
         </Route>
       </Switch>
+      <Footer />
     </BrowserRouter>
   )
 }
