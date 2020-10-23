@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
 import axios from 'axios'
 import RestaurantReview from './RestaurantReview'
+import NewRatingInput from './NewRatingInput'
 
 function RestaurantDetails(props) {
   const [isLoading, setIsLoading] = useState(true)
@@ -26,7 +27,6 @@ function RestaurantDetails(props) {
       try {
         const response = await axios.get(`/ratings/${id}`)
         setRatings(response.data)
-        console.log(response.data)
         setIsLoading(false)
       } catch (err) {
         // Replace alert with a flash message
@@ -59,10 +59,9 @@ function RestaurantDetails(props) {
       <h1>{restaurant.name}</h1>
       <div>
         {ratings.map(review => {
-          return <RestaurantReview key={review.id} {...review} />
+          return <RestaurantReview key={review.id} review={review} setRatings={setRatings} ratings={ratings} setRestaurant={setRestaurant} restaurant={restaurant} />
         })}
       </div>
-      <br />
       <h3>Page Details</h3>
       <div>name: {restaurant.name}</div>
       <div>description: {restaurant.description}</div>
@@ -72,6 +71,10 @@ function RestaurantDetails(props) {
       <div>count: {restaurant.count}</div>
       <Link to={`/restaurant/${restaurant.id}/update`}>Edit Restaurant</Link>
       <button onClick={() => handleDelete(restaurant.id)}>Delete Restaurant</button>
+      <br />
+      <br />
+      <br />
+      <NewRatingInput id={id} setRatings={setRatings} ratings={ratings} setRestaurant={setRestaurant} restaurant={restaurant} />
     </>
   )
 }

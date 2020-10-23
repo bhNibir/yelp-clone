@@ -6,7 +6,7 @@ const validateRestaurantInput = require('../middleware/validateRestaurantInput')
 // Get all restaurants
 router.get('/', async (req, res) => {
   try {
-    const results = await db.query('SELECT restaurants.id, restaurants.name, description, location, priceRange, TRUNC(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) GROUP BY restaurants.id')
+    const results = await db.query('SELECT restaurants.id, restaurants.name, description, location, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) GROUP BY restaurants.id')
     const data = results.rows
     res.status(200).json(data)
   } catch (err) {
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 // Get a single restaurant
 router.get('/:id', async (req, res) => {
   try {
-    const result = await db.query('SELECT restaurants.id, restaurants.name, description, location, priceRange, TRUNC(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE restaurants.id = $1 GROUP BY restaurants.id', [req.params.id])
+    const result = await db.query('SELECT restaurants.id, restaurants.name, description, location, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE restaurants.id = $1 GROUP BY restaurants.id', [req.params.id])
     if (result.rows.length > 0) {
       const data = result.rows[0]
       res.status(200).json(data)
