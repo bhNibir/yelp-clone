@@ -7,7 +7,7 @@ const validateRatingInput = require('../middleware/validateRatingInput')
 // Get all ratings for a specific restaurant
 router.get('/:id', isRestaurantIDValid, async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM ratings WHERE restaurant_id = $1', [req.params.id])
+    const result = await db.query('SELECT * FROM ratings WHERE restaurant_id = $1 ORDER BY timestamp DESC', [req.params.id])
     const data = result.rows
     res.status(200).json(data)
   } catch (err) {
