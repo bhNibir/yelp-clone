@@ -35,6 +35,7 @@ function Home(props) {
       try {
         await axios.delete(`/restaurants/${id}`)
         setRestaurants(prev => prev.filter(restaurant => restaurant.id !== id))
+        setRestaurantCollection(prev => prev.filter(restaurant => restaurant.id !== id))
         dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully deleted!', color: 'success' })
       } catch (err) {
         dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })

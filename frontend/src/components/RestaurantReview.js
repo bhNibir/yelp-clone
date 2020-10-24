@@ -3,7 +3,7 @@ import axios from 'axios'
 import AppContext from '../AppContext'
 
 function RestaurantReview(props) {
-  const { review, ratings, setRatings, restaurant, setRestaurant } = props
+  const { review, ratings, setRatings, restaurant, setRestaurant, setRatingsCollection } = props
 
   const dispatch = useContext(AppContext)
 
@@ -14,6 +14,7 @@ function RestaurantReview(props) {
       updatePageRating()
       // Remove from page
       setRatings(prev => prev.filter(rating => rating.id !== review.id))
+      setRatingsCollection(prev => prev.filter(rating => rating.id !== review.id))
       dispatch({ type: 'FlashMessage', value: 'Review was successfully deleted!', color: 'success' })
     } catch (err) {
       dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })

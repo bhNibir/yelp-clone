@@ -11,8 +11,9 @@ function RestaurantDetails(props) {
   const [ratings, setRatings] = useState([])
   const [ratingsCollection, setRatingsCollection] = useState([])
   const [counter, setCounter] = useState(5)
-  const [isMoreRatings, setIsMoreRatings] = useState(true)
+  const [isMoreRatings, setIsMoreRatings] = useState(false)
   const [scrollPosition, setScrollPosition] = useState(0)
+  const [loadEvent, setLoadEvent] = useState(0)
 
   const history = useHistory()
   const { id } = useParams()
@@ -34,6 +35,7 @@ function RestaurantDetails(props) {
         const response = await axios.get(`/ratings/${id}`)
         setRatingsCollection(response.data)
         setRatings(response.data.slice(0, counter))
+        if (response.data.length > 5) setIsMoreRatings(true)
         setIsLoading(false)
       } catch (err) {
         dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
@@ -60,6 +62,7 @@ function RestaurantDetails(props) {
   useEffect(() => {
     setScrollPosition(window.scrollY)
     setRatings(ratingsCollection.slice(0, counter))
+    setLoadEvent(prev => prev + 1)
     if (ratingsCollection.length && counter >= ratingsCollection.length) {
       setIsMoreRatings(false)
     }
@@ -68,7 +71,7 @@ function RestaurantDetails(props) {
   // Restores current page position after loading new ratings
   useEffect(() => {
     window.scrollTo(0, scrollPosition)
-  }, [ratings])
+  }, [loadEvent])
 
   if (isLoading) {
     return <div>Loading...</div>
@@ -79,7 +82,7 @@ function RestaurantDetails(props) {
       <h1>{restaurant.name}</h1>
       <div>
         {ratings.map(review => {
-          return <RestaurantReview key={review.id} review={review} setRatings={setRatings} ratings={ratings} setRestaurant={setRestaurant} restaurant={restaurant} />
+          return <RestaurantReview key={review.id} review={review} setRatings={setRatings} ratings={ratings} setRestaurant={setRestaurant} restaurant={restaurant} setRatingsCollection={setRatingsCollection} />
         })}
       </div>
       {isMoreRatings && <button onClick={() => setCounter(prev => prev + 5)}>Load More Ratings</button>}
@@ -96,7 +99,7 @@ function RestaurantDetails(props) {
       <br />
       <br />
       <br />
-      <NewRatingInput id={id} setRatings={setRatings} ratings={ratings} setRestaurant={setRestaurant} restaurant={restaurant} />
+      <NewRatingInput id={id} setRatings={setRatings} ratings={ratings} setRestaurant={setRestaurant} restaurant={restaurant} setRatingsCollection={setRatingsCollection} />
     </>
   )
 }

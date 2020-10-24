@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import AppContext from '../AppContext'
 
-function NewRatingInput({ id, setRatings, ratings, setRestaurant, restaurant }) {
+function NewRatingInput({ id, setRatings, ratings, setRestaurant, restaurant, setRatingsCollection }) {
   const [newRating, setNewRating] = useState({
     restaurant_id: id,
     rating: '',
@@ -31,6 +31,7 @@ function NewRatingInput({ id, setRatings, ratings, setRestaurant, restaurant }) 
         updateCurrentPageRating(newRating.rating)
         // Add the new review to the page
         setRatings(prev => [response.data].concat(prev))
+        setRatingsCollection(prev => [response.data].concat(prev))
         // Reset the form field inputs to empty
         setNewRating({ restaurant_id: id, rating: '', name: '', message: '' })
         // Sends off success message
