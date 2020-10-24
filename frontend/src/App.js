@@ -10,6 +10,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import FlashMessage from './components/FlashMessage'
 import AppContext from './AppContext'
+import CreateRestaurantPage from './components/CreateRestaurantPage'
 
 function App() {
   const initialState = {
@@ -32,6 +33,9 @@ function App() {
         <Switch>
           <Route path="/" exact>
             <Home />
+          </Route>
+          <Route path="/restaurant/create">
+            <CreateRestaurantPage />
           </Route>
           <Route path="/restaurant/:id" exact>
             <RestaurantDetails />

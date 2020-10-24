@@ -1,41 +1,30 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 import AppContext from '../AppContext'
 
-function UpdateRestaurant(props) {
-  const [isLoading, setIsLoading] = useState(true)
-  const [restaurant, setRestaurant] = useState()
+function CreateRestaurantPage(props) {
+  const [restaurant, setRestaurant] = useState({
+    name: '',
+    description: '',
+    location: '',
+    pricerange: ''
+  })
 
   let history = useHistory()
   const dispatch = useContext(AppContext)
-  const { id } = useParams()
-
-  useEffect(() => {
-    async function fetchRestaurantData() {
-      try {
-        const response = await axios.get(`/restaurants/${id}`)
-        setRestaurant(response.data)
-        setIsLoading(false)
-      } catch (err) {
-        dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
-        history.push('/')
-      }
-    }
-    fetchRestaurantData()
-  }, [id])
 
   async function submitHandler(e) {
     e.preventDefault()
     try {
-      await axios.put(`/restaurants/${id}`, {
+      const response = await axios.post(`/restaurants`, {
         name: restaurant.name,
         description: restaurant.description,
         location: restaurant.location,
         priceRange: parseInt(restaurant.pricerange)
       })
-      history.push(`/restaurant/${id}`)
-      dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully updated!', color: 'success' })
+      dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully created!', color: 'success' })
+      history.push(`/restaurant/${response.data.id}`)
     } catch (err) {
       dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
     }
@@ -45,13 +34,9 @@ function UpdateRestaurant(props) {
     setRestaurant({ ...restaurant, [e.currentTarget.name]: e.currentTarget.value })
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
-
   return (
     <>
-      <h1>Update Restaurant</h1>
+      <h1>Create New Restaurant</h1>
       <form onSubmit={submitHandler}>
         <input name="name" placeholder="Name" type="text" value={restaurant.name} onChange={e => updateInput(e)} required />
         <input name="description" placeholder="Description" type="text" value={restaurant.description} onChange={e => updateInput(e)} required />
@@ -63,4 +48,4 @@ function UpdateRestaurant(props) {
   )
 }
 
-export default UpdateRestaurant
+export default CreateRestaurantPage

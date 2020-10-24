@@ -19,7 +19,7 @@ function Home(props) {
         setRestaurants(response.data)
         setIsLoading(false)
       } catch (err) {
-        dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
+        dispatch({ type: 'FlashMessage', value: 'Server is temporarily down. Please try again later.', color: 'error' })
       }
     }
     fetchData()
