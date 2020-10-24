@@ -30,7 +30,7 @@ function NewRatingInput({ id, setRatings, ratings, setRestaurant, restaurant }) 
         // Update the rating & count displayed on page
         updateCurrentPageRating(newRating.rating)
         // Add the new review to the page
-        setRatings(prev => prev.concat(response.data))
+        setRatings(prev => [response.data].concat(prev))
         // Reset the form field inputs to empty
         setNewRating({ restaurant_id: id, rating: '', name: '', message: '' })
         // Sends off success message

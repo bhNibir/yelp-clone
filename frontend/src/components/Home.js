@@ -1,22 +1,25 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
+import * as _ from 'underscore'
 import axios from 'axios'
-import { useHistory, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import AppContext from '../AppContext'
 
 function Home(props) {
   // Set up state
   const [isLoading, setIsLoading] = useState(true)
+  const [restaurantCollection, setRestaurantCollection] = useState([])
   const [restaurants, setRestaurants] = useState([])
+  const [counter, setCounter] = useState(10)
 
   const dispatch = useContext(AppContext)
-  let history = useHistory()
 
   // Acquire restaurant data on page load
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await axios.get('/restaurants')
-        setRestaurants(response.data)
+        setRestaurantCollection(response.data)
+        setRestaurants(response.data.slice(0, 10))
         setIsLoading(false)
       } catch (err) {
         dispatch({ type: 'FlashMessage', value: 'Server is temporarily down. Please try again later.', color: 'error' })
@@ -38,6 +41,31 @@ function Home(props) {
       }
     }
   }
+
+  // Loads more restuarants when scrolled to bottom of screen
+  const triggerMoreRestaurants = useCallback(() => {
+    console.log('Ran')
+    if (window.scrollY + window.innerHeight >= document.body.offsetHeight) {
+      setCounter(prev => prev + 10)
+    }
+  }, [])
+
+  // Throttles scroll event
+  const handleScrollEvent = useCallback(_.throttle(triggerMoreRestaurants, 200), [])
+
+  // Adds scroll event listener to trigger infinite load functionality
+  useEffect(() => {
+    window.addEventListener('scroll', handleScrollEvent)
+    return () => window.removeEventListener('scroll', handleScrollEvent)
+  }, [])
+
+  // Handles Load More Button Functionality
+  useEffect(() => {
+    setRestaurants(restaurantCollection.slice(0, counter))
+    if (restaurantCollection.length && counter >= restaurantCollection.length) {
+      window.removeEventListener('scroll', handleScrollEvent)
+    }
+  }, [counter])
 
   // Send back loading page until data has been retrieved
   if (isLoading) {
@@ -66,6 +94,9 @@ function Home(props) {
           )
         })}
       </div>
+      <br />
+      <br />
+      {/* {{isMoreResults && <button onClick={() => setCounter(prev => prev + 10)}>Load More Restaurants</button>}} */}
     </>
   )
 }

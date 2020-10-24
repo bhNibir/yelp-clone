@@ -9,6 +9,10 @@ function RestaurantDetails(props) {
   const [isLoading, setIsLoading] = useState(true)
   const [restaurant, setRestaurant] = useState()
   const [ratings, setRatings] = useState([])
+  const [ratingsCollection, setRatingsCollection] = useState([])
+  const [counter, setCounter] = useState(5)
+  const [isMoreRatings, setIsMoreRatings] = useState(true)
+  const [scrollPosition, setScrollPosition] = useState(0)
 
   const history = useHistory()
   const { id } = useParams()
@@ -28,7 +32,8 @@ function RestaurantDetails(props) {
     async function fetchRestaurantReviews() {
       try {
         const response = await axios.get(`/ratings/${id}`)
-        setRatings(response.data)
+        setRatingsCollection(response.data)
+        setRatings(response.data.slice(0, counter))
         setIsLoading(false)
       } catch (err) {
         dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
@@ -51,6 +56,20 @@ function RestaurantDetails(props) {
     }
   }
 
+  // Handle Load More Button
+  useEffect(() => {
+    setScrollPosition(window.scrollY)
+    setRatings(ratingsCollection.slice(0, counter))
+    if (ratingsCollection.length && counter >= ratingsCollection.length) {
+      setIsMoreRatings(false)
+    }
+  }, [counter])
+
+  // Restores current page position after loading new ratings
+  useEffect(() => {
+    window.scrollTo(0, scrollPosition)
+  }, [ratings])
+
   if (isLoading) {
     return <div>Loading...</div>
   }
@@ -63,6 +82,8 @@ function RestaurantDetails(props) {
           return <RestaurantReview key={review.id} review={review} setRatings={setRatings} ratings={ratings} setRestaurant={setRestaurant} restaurant={restaurant} />
         })}
       </div>
+      {isMoreRatings && <button onClick={() => setCounter(prev => prev + 5)}>Load More Ratings</button>}
+      <br />
       <h3>Page Details</h3>
       <div>name: {restaurant.name}</div>
       <div>description: {restaurant.description}</div>
