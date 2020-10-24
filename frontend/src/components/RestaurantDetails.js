@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
 import axios from 'axios'
 import RestaurantReview from './RestaurantReview'
 import NewRatingInput from './NewRatingInput'
+import AppContext from '../AppContext'
 
 function RestaurantDetails(props) {
   const [isLoading, setIsLoading] = useState(true)
@@ -11,6 +12,7 @@ function RestaurantDetails(props) {
 
   const history = useHistory()
   const { id } = useParams()
+  const dispatch = useContext(AppContext)
 
   useEffect(() => {
     async function fetchRestaurantData() {
@@ -19,8 +21,8 @@ function RestaurantDetails(props) {
         setRestaurant(response.data)
         fetchRestaurantReviews()
       } catch (err) {
+        dispatch({ type: 'FlashMessage', value: 'A restaurant with that id does not exist', color: 'error' })
         history.push('/')
-        // Add a flash message with the err.response.data
       }
     }
     async function fetchRestaurantReviews() {
@@ -29,8 +31,7 @@ function RestaurantDetails(props) {
         setRatings(response.data)
         setIsLoading(false)
       } catch (err) {
-        // Replace alert with a flash message
-        alert(err.response.data)
+        dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
       }
     }
     fetchRestaurantData()
@@ -38,14 +39,14 @@ function RestaurantDetails(props) {
 
   // Handle Delete Button Click
   async function handleDelete(id) {
-    const confirm = window.confirm('Are you sure you want to delete this post?')
+    const confirm = window.confirm('Are you sure you want to delete this restaurant?')
     if (confirm) {
       try {
         await axios.delete(`/restaurants/${id}`)
+        dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully deleted!', color: 'success' })
         history.push('/')
       } catch (err) {
-        // Replace alert with flash message
-        alert(err.response.data)
+        dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
       }
     }
   }

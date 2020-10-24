@@ -5,7 +5,7 @@ async function validateRatingInput(req, res, next) {
     const { rating, name, message } = req.body
     // Confirm input type is correct
     if (typeof rating !== 'number' || typeof name !== 'string' || typeof message !== 'string') {
-      return res.status(403).json('Incorrect field type.')
+      return res.status(403).json('You cannot leave the fields blank.')
     }
     // Check if empty
     if (trim(name) || trim(message) || !rating) {

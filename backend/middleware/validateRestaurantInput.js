@@ -5,7 +5,7 @@ async function validateRestaurantInput(req, res, next) {
     const { name, description, location, priceRange } = req.body
     // Confirm input type is correct
     if (typeof name !== 'string' || typeof description !== 'string' || typeof location !== 'string' || typeof priceRange !== 'number') {
-      return res.status(403).json('Incorrect field type.')
+      return res.status(403).json('You cannot leave the fields blank.')
     }
     // Check if empty
     if (trim(name) || trim(description) || trim(location) || !priceRange) {

@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import axios from 'axios'
+import AppContext from '../AppContext'
 
 function UpdateRestaurant(props) {
   const [isLoading, setIsLoading] = useState(true)
   const [restaurant, setRestaurant] = useState()
 
   let history = useHistory()
-
+  const dispatch = useContext(AppContext)
   const { id } = useParams()
 
   useEffect(() => {
@@ -17,8 +18,8 @@ function UpdateRestaurant(props) {
         setRestaurant(response.data)
         setIsLoading(false)
       } catch (err) {
+        dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
         history.push('/')
-        // Add in flash message with the err.response.data as the message
       }
     }
     fetchRestaurantData()
@@ -34,9 +35,9 @@ function UpdateRestaurant(props) {
         priceRange: parseInt(restaurant.pricerange)
       })
       history.push(`/restaurant/${id}`)
+      dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully updated!', color: 'success' })
     } catch (err) {
-      // Replace this alert with a flash message that has err.response.data as the message
-      alert(err.response.data)
+      dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
     }
   }
 

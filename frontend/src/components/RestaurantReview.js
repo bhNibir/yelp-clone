@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
+import AppContext from '../AppContext'
 
 function RestaurantReview(props) {
   const { review, ratings, setRatings, restaurant, setRestaurant } = props
+
+  const dispatch = useContext(AppContext)
 
   async function handleDelete() {
     try {
@@ -11,8 +14,9 @@ function RestaurantReview(props) {
       updatePageRating()
       // Remove from page
       setRatings(prev => prev.filter(rating => rating.id !== review.id))
+      dispatch({ type: 'FlashMessage', value: 'Review was successfully deleted!', color: 'success' })
     } catch (err) {
-      alert(err.response.data)
+      dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
     }
   }
 

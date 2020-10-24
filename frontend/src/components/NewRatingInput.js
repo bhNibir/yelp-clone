@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
+import AppContext from '../AppContext'
 
 function NewRatingInput({ id, setRatings, ratings, setRestaurant, restaurant }) {
   const [newRating, setNewRating] = useState({
@@ -8,6 +9,7 @@ function NewRatingInput({ id, setRatings, ratings, setRestaurant, restaurant }) 
     name: '',
     message: ''
   })
+  const dispatch = useContext(AppContext)
 
   function updateInput(e) {
     setNewRating({ ...newRating, [e.currentTarget.name]: e.currentTarget.value })
@@ -15,24 +17,29 @@ function NewRatingInput({ id, setRatings, ratings, setRestaurant, restaurant }) 
 
   async function onSubmit(e) {
     e.preventDefault()
-    try {
-      // Sends off request to store new rating in database
-      const response = await axios.post(`/ratings/`, {
-        restaurant_id: newRating.restaurant_id,
-        rating: parseFloat(newRating.rating),
-        name: newRating.name,
-        message: newRating.message
-      })
-      // Update the rating & count displayed on page
-      updateCurrentPageRating(newRating.rating)
-      // Add the new review to the page
-      setRatings(prev => prev.concat(response.data))
-      // Reset the form field inputs to empty
-      setNewRating({ restaurant_id: id, rating: '', name: '', message: '' })
-      // Send success flash message here
-    } catch (err) {
-      // Replace alert with flash message
-      alert(err.response.data)
+    // Confirms fields have values & rating is between 1-5 before sending request to server
+    if (newRating.restaurant_id && 1 <= parseFloat(newRating.rating) <= 5 && newRating.name && newRating.message) {
+      try {
+        // Sends off request to store new rating in database
+        const response = await axios.post(`/ratings/`, {
+          restaurant_id: newRating.restaurant_id,
+          rating: parseFloat(newRating.rating),
+          name: newRating.name,
+          message: newRating.message
+        })
+        // Update the rating & count displayed on page
+        updateCurrentPageRating(newRating.rating)
+        // Add the new review to the page
+        setRatings(prev => prev.concat(response.data))
+        // Reset the form field inputs to empty
+        setNewRating({ restaurant_id: id, rating: '', name: '', message: '' })
+        // Sends off success message
+        dispatch({ type: 'FlashMessage', value: 'Review was successfully published!', color: 'success' })
+      } catch (err) {
+        dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
+      }
+    } else {
+      dispatch({ type: 'FlashMessage', value: 'You cannot leave the fields blank.', color: 'error' })
     }
   }
 

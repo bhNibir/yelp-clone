@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { useHistory, Link } from 'react-router-dom'
+import AppContext from '../AppContext'
 
 function Home(props) {
   // Set up state
   const [isLoading, setIsLoading] = useState(true)
   const [restaurants, setRestaurants] = useState([])
 
+  const dispatch = useContext(AppContext)
   let history = useHistory()
 
   // Acquire restaurant data on page load
@@ -17,8 +19,7 @@ function Home(props) {
         setRestaurants(response.data)
         setIsLoading(false)
       } catch (err) {
-        // Replace alert with flash message. Also add in redirect to 500 Internal Error page
-        alert(err.response.data)
+        dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
       }
     }
     fetchData()
@@ -31,9 +32,9 @@ function Home(props) {
       try {
         await axios.delete(`/restaurants/${id}`)
         setRestaurants(prev => prev.filter(restaurant => restaurant.id !== id))
+        dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully deleted!', color: 'success' })
       } catch (err) {
-        // Replace alert with flash message
-        alert(err.response.data)
+        dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
       }
     }
   }
