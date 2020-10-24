@@ -14,6 +14,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 // Routes
+app.use('/query', require('./routes/queryRouter'))
 app.use('/restaurants', require('./routes/restaurantRouter'))
 app.use('/ratings', require('./routes/ratingsRouter'))
 

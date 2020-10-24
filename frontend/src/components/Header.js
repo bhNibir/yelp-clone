@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
+import Searchbar from './Searchbar'
 
 function Header(props) {
   return (
@@ -17,6 +18,7 @@ function Header(props) {
             </Link>
           </li>
         </ul>
+        <Searchbar />
       </div>
     </>
   )
