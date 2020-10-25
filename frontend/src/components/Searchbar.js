@@ -27,7 +27,7 @@ function Searchbar(props) {
   useEffect(() => {
     if (searchQuery.length) {
       setSearchLoading(true)
-      timer = setTimeout(fetchResults, 1000)
+      timer = setTimeout(fetchResults, 300)
     } else {
       setSearchLoading(false)
       setSearchResults([])

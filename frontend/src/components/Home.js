@@ -45,7 +45,6 @@ function Home(props) {
 
   // Loads more restuarants when scrolled to bottom of screen
   const triggerMoreRestaurants = useCallback(() => {
-    console.log('Ran')
     if (window.scrollY + window.innerHeight >= document.body.offsetHeight) {
       setCounter(prev => prev + 10)
     }

@@ -14,13 +14,18 @@ import CreateRestaurantPage from './components/CreateRestaurantPage'
 
 function App() {
   const initialState = {
-    flashMessages: []
+    flashMessages: [],
+    loggedIn: false
   }
 
   const reducer = (state, action) => {
     switch (action.type) {
       case 'FlashMessage':
-        return { flashMessages: state.flashMessages.concat({ message: action.value, color: action.color }) }
+        return { ...state, flashMessages: state.flashMessages.concat({ message: action.value, color: action.color }) }
+      case 'Login':
+        return { ...state, loggedIn: true }
+      case 'Logout':
+        return { ...state, loggedIn: false }
     }
   }
 
