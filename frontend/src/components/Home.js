@@ -3,6 +3,8 @@ import * as _ from 'underscore'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import AppContext from '../AppContext'
+import StateContext from '../StateContext'
+import SortRestaurants from './SortRestaurants'
 
 function Home(props) {
   // Set up state
@@ -12,6 +14,7 @@ function Home(props) {
   const [counter, setCounter] = useState(10)
 
   const dispatch = useContext(AppContext)
+  const state = useContext(StateContext)
 
   // Acquire restaurant data on page load
   useEffect(() => {
@@ -75,6 +78,7 @@ function Home(props) {
   return (
     <>
       <h1>Restaurants List</h1>
+      <SortRestaurants />
       <div>
         {restaurants.map(restaurant => {
           return (
@@ -87,8 +91,12 @@ function Home(props) {
               <div>Rating: {restaurant.rating}</div>
               <div>Rating Count: {restaurant.count}</div>
               <Link to={`/restaurant/${restaurant.id}`}>View Details</Link>
-              <Link to={`/restaurant/${restaurant.id}/update`}>Edit Restaurant</Link>
-              <button onClick={() => handleDelete(restaurant.id)}>Delete Restaurant</button>
+              {state.loggedIn && (
+                <>
+                  <Link to={`/restaurant/${restaurant.id}/update`}>Edit Restaurant</Link>
+                  <button onClick={() => handleDelete(restaurant.id)}>Delete Restaurant</button>
+                </>
+              )}
               <br />
             </div>
           )

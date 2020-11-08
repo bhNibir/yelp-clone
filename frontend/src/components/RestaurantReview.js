@@ -1,11 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import AppContext from '../AppContext'
+import StateContext from '../StateContext'
+import StarRating from './StarRating'
 
 function RestaurantReview(props) {
   const { review, ratings, setRatings, restaurant, setRestaurant, setRatingsCollection } = props
 
   const dispatch = useContext(AppContext)
+  const state = useContext(StateContext)
 
   async function handleDelete() {
     try {
@@ -37,12 +40,15 @@ function RestaurantReview(props) {
 
   return (
     <>
+      <StarRating rating={review.rating} />
       <div>{review.rating}</div>
       <div>{review.name}</div>
       <div>{review.message}</div>
-      <button type="submit" onClick={handleDelete}>
-        Delete Review
-      </button>
+      {state.loggedIn && (
+        <button type="submit" onClick={handleDelete}>
+          Delete Review
+        </button>
+      )}
       <br />
     </>
   )

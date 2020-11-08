@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import axios from 'axios'
 import AppContext from '../AppContext'
+import StateContext from '../StateContext'
 
 function UpdateRestaurant(props) {
   const [isLoading, setIsLoading] = useState(true)
@@ -9,20 +10,31 @@ function UpdateRestaurant(props) {
 
   let history = useHistory()
   const dispatch = useContext(AppContext)
+  const state = useContext(StateContext)
   const { id } = useParams()
 
+  // Redirect if user not logged in
   useEffect(() => {
-    async function fetchRestaurantData() {
-      try {
-        const response = await axios.get(`/restaurants/${id}`)
-        setRestaurant(response.data)
-        setIsLoading(false)
-      } catch (err) {
-        dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
-        history.push('/')
-      }
+    if (!state.loggedIn) {
+      history.push('/')
+      dispatch({ type: 'FlashMessage', value: 'You do not have the authorization to view that page.', color: 'error' })
     }
-    fetchRestaurantData()
+  }, [state.loggedIn])
+
+  useEffect(() => {
+    if (state.loggedIn) {
+      async function fetchRestaurantData() {
+        try {
+          const response = await axios.get(`/restaurants/${id}`)
+          setRestaurant(response.data)
+          setIsLoading(false)
+        } catch (err) {
+          dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
+          history.push('/')
+        }
+      }
+      fetchRestaurantData()
+    }
   }, [id])
 
   async function submitHandler(e) {

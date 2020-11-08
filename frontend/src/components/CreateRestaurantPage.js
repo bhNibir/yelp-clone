@@ -1,7 +1,8 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 import AppContext from '../AppContext'
+import StateContext from '../StateContext'
 
 function CreateRestaurantPage(props) {
   const [restaurant, setRestaurant] = useState({
@@ -13,6 +14,7 @@ function CreateRestaurantPage(props) {
 
   let history = useHistory()
   const dispatch = useContext(AppContext)
+  const state = useContext(StateContext)
 
   async function submitHandler(e) {
     e.preventDefault()
@@ -33,6 +35,14 @@ function CreateRestaurantPage(props) {
   function updateInput(e) {
     setRestaurant({ ...restaurant, [e.currentTarget.name]: e.currentTarget.value })
   }
+
+  // Redirect if user not logged in
+  useEffect(() => {
+    if (!state.loggedIn) {
+      dispatch({ type: 'FlashMessage', value: 'You do not have the authorization to view that page.', color: 'error' })
+      history.push('/')
+    }
+  }, [state.loggedIn])
 
   return (
     <>

@@ -4,6 +4,8 @@ import axios from 'axios'
 import RestaurantReview from './RestaurantReview'
 import NewRatingInput from './NewRatingInput'
 import AppContext from '../AppContext'
+import StateContext from '../StateContext'
+import StarRating from './StarRating'
 
 function RestaurantDetails(props) {
   const [isLoading, setIsLoading] = useState(true)
@@ -18,6 +20,7 @@ function RestaurantDetails(props) {
   const history = useHistory()
   const { id } = useParams()
   const dispatch = useContext(AppContext)
+  const state = useContext(StateContext)
 
   useEffect(() => {
     async function fetchRestaurantData() {
@@ -92,10 +95,15 @@ function RestaurantDetails(props) {
       <div>description: {restaurant.description}</div>
       <div>location: {restaurant.location}</div>
       <div>pricerange: {restaurant.pricerange}</div>
+      <StarRating rating={restaurant.rating} />
       <div>rating: {restaurant.rating}</div>
       <div>count: {restaurant.count}</div>
-      <Link to={`/restaurant/${restaurant.id}/update`}>Edit Restaurant</Link>
-      <button onClick={() => handleDelete(restaurant.id)}>Delete Restaurant</button>
+      {state.loggedIn && (
+        <>
+          <Link to={`/restaurant/${restaurant.id}/update`}>Edit Restaurant</Link>
+          <button onClick={() => handleDelete(restaurant.id)}>Delete Restaurant</button>
+        </>
+      )}
       <br />
       <br />
       <br />
