@@ -79,7 +79,7 @@ function Home(props) {
   return (
     <>
       <h1>Restaurants List</h1>
-      <SortRestaurants setRestaurants={setRestaurants} setRestaurantCollection={setRestaurantCollection} />
+      <SortRestaurants setRestaurants={setRestaurants} setRestaurantCollection={setRestaurantCollection} restaurantCollection={restaurantCollection} />
       <div>
         {restaurants.map(restaurant => {
           let dollarAmount = ''
