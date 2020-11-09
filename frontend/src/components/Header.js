@@ -32,7 +32,7 @@ function Header(props) {
           )}
           <li className="nav-item">
             <button className="nav-link" onClick={switchView}>
-              Switch to Admin
+              {state.loggedIn ? 'Switch to User' : 'Switch to Admin'}
             </button>
           </li>
         </ul>

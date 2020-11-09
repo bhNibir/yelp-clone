@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import AppContext from '../AppContext'
 import StateContext from '../StateContext'
 import SortRestaurants from './SortRestaurants'
+import StarRating from './StarRating'
 
 function Home(props) {
   // Set up state
@@ -81,14 +82,18 @@ function Home(props) {
       <SortRestaurants />
       <div>
         {restaurants.map(restaurant => {
+          let dollarAmount = ''
+          for (var i = 0; i < restaurant.pricerange; i++) {
+            dollarAmount += '$'
+          }
           return (
             <div key={restaurant.id}>
               <br />
               <div>Name: {restaurant.name}</div>
               <div>Description: {restaurant.description}</div>
               <div>Location: {restaurant.location}</div>
-              <div>Price Range: {restaurant.pricerange}</div>
-              <div>Rating: {restaurant.rating}</div>
+              <div>Price Range: {dollarAmount}</div>
+              <StarRating rating={restaurant.rating} />
               <div>Rating Count: {restaurant.count}</div>
               <Link to={`/restaurant/${restaurant.id}`}>View Details</Link>
               {state.loggedIn && (
