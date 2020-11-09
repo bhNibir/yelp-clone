@@ -61,7 +61,7 @@ function Home(props) {
   useEffect(() => {
     window.addEventListener('scroll', handleScrollEvent)
     return () => window.removeEventListener('scroll', handleScrollEvent)
-  }, [])
+  }, [restaurantCollection])
 
   // Handles Load More Button Functionality
   useEffect(() => {
@@ -79,7 +79,7 @@ function Home(props) {
   return (
     <>
       <h1>Restaurants List</h1>
-      <SortRestaurants />
+      <SortRestaurants setRestaurants={setRestaurants} setRestaurantCollection={setRestaurantCollection} />
       <div>
         {restaurants.map(restaurant => {
           let dollarAmount = ''
@@ -93,8 +93,8 @@ function Home(props) {
               <div>Description: {restaurant.description}</div>
               <div>Location: {restaurant.location}</div>
               <div>Price Range: {dollarAmount}</div>
-              <StarRating rating={restaurant.rating} />
-              <div>Rating Count: {restaurant.count}</div>
+              {restaurant.rating ? <StarRating rating={restaurant.rating} count={restaurant.count} /> : 'No Ratings'}
+              <br />
               <Link to={`/restaurant/${restaurant.id}`}>View Details</Link>
               {state.loggedIn && (
                 <>
@@ -107,6 +107,7 @@ function Home(props) {
           )
         })}
       </div>
+      {!restaurants.length && <h1>No Results found...</h1>}
       <br />
       <br />
       {/* {{isMoreResults && <button onClick={() => setCounter(prev => prev + 10)}>Load More Restaurants</button>}} */}

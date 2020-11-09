@@ -3,6 +3,23 @@ const db = require('../db')
 const isRestaurantIDValid = require('../middleware/isRestaurantIDValid')
 const validateRestaurantInput = require('../middleware/validateRestaurantInput')
 
+// Search for restaurant
+router.get('/search', async (req, res) => {
+  const { locationType, location } = req.query
+  const locationTypes = ['street', 'city', 'province', 'country', 'postalcode']
+  // Protects from SQL injection attack
+  if (!locationTypes.includes(locationType)) {
+    return res.status(403).json('Invalid Location Type.')
+  }
+  try {
+    const results = await db.query(`SELECT restaurants.id, restaurants.name, description, location, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE UPPER(restaurants.${locationType}) LIKE UPPER($1) GROUP BY restaurants.id`, [`%${location}%`])
+    res.status(200).json(results.rows)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json('There has been an error. Please try again later.')
+  }
+})
+
 // Get all restaurants
 router.get('/', async (req, res) => {
   try {
