@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 require('dotenv').config()
 
 // Create Server Instance
@@ -7,6 +8,8 @@ const app = express()
 
 // Environmental Variables
 const PORT = process.env.PORT
+
+app.use(express.static(path.join(__dirname, 'build')))
 
 // Middleware
 app.use(cors())
@@ -17,6 +20,10 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/api/query', require('./routes/queryRouter'))
 app.use('/api/restaurants', require('./routes/restaurantRouter'))
 app.use('/api/ratings', require('./routes/ratingsRouter'))
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 
 // Server Listener
 app.listen(PORT, () => {
