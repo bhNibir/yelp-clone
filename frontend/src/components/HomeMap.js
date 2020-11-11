@@ -11,6 +11,14 @@ function MapContainer(props) {
   const [rerender, setRerender] = useState(0)
   const history = useHistory()
 
+  const [key, setKey] = useState(0)
+  const [pastList, setPastList] = useState({
+    length: restaurantCollection.length,
+    firstItem: restaurantCollection[0]
+  })
+  const [pastSortCount, setPastSortCount] = useState(sortCount)
+
+  // Loads new markers ONLY when a search is made
   useEffect(() => {
     setMarkers(
       restaurantCollection.map(restaurant => {
@@ -27,29 +35,15 @@ function MapContainer(props) {
         )
       })
     )
-  }, [restaurantCollection])
+  }, [key])
 
   // Rerenders the component to fix bug where info window was not appearing on first marker click
   useEffect(() => {
     setRerender(prev => prev + 1)
   }, [selectedMarker])
 
-  function coords() {
-    if (restaurantCollection.length) {
-      return { lat: parseFloat(restaurantCollection[0].latitude), lng: parseFloat(restaurantCollection[0].longtitude) }
-    } else {
-      return { lat: 43.6532, lng: -79.3832 }
-    }
-  }
-
   // The following code initiates a new default center when a search is performed
-  const [pastList, setPastList] = useState({
-    length: restaurantCollection.length,
-    firstItem: restaurantCollection[0]
-  })
-  const [pastSortCount, setPastSortCount] = useState(sortCount)
 
-  const [key, setKey] = useState(0)
   useEffect(() => {
     if (restaurantCollection.length !== pastList.length) {
       setSelectedMarker(null)
@@ -74,11 +68,20 @@ function MapContainer(props) {
     history.push(`/restaurant/${id}`)
   }
 
+  // Map Component-Specific Code
   function zoomLevel() {
     if (restaurantCollection.length > 2) {
       return 9
     }
     return 11
+  }
+
+  function coords() {
+    if (restaurantCollection.length) {
+      return { lat: parseFloat(restaurantCollection[0].latitude), lng: parseFloat(restaurantCollection[0].longtitude) }
+    } else {
+      return { lat: 43.6532, lng: -79.3832 }
+    }
   }
 
   const mapStyles = {
