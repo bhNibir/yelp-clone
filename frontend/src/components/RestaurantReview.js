@@ -12,7 +12,7 @@ function RestaurantReview(props) {
 
   async function handleDelete() {
     try {
-      await axios.delete(`/ratings/${review.id}`)
+      await axios.delete(`/api/ratings/${review.id}`)
       // Update the rating & count displayed on page
       updatePageRating()
       // Remove from page

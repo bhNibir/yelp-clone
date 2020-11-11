@@ -12,7 +12,7 @@ function Searchbar(props) {
 
   const fetchResults = async () => {
     try {
-      let response = await axios.get(`/query/${searchQuery}`)
+      let response = await axios.get(`/api/query/${searchQuery}`)
       if (response.data.length) {
         setSearchResults(response.data)
       } else {

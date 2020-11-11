@@ -24,7 +24,7 @@ function Home(props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get('/restaurants')
+        const response = await axios.get('/api/restaurants')
         setRestaurantCollection(response.data)
         setRestaurants(response.data.slice(0, 10))
         setIsLoading(false)
@@ -40,7 +40,7 @@ function Home(props) {
     const confirm = window.confirm('Are you sure you want to delete this post?')
     if (confirm) {
       try {
-        await axios.delete(`/restaurants/${id}`)
+        await axios.delete(`/api/restaurants/${id}`)
         setRestaurants(prev => prev.filter(restaurant => restaurant.id !== id))
         setRestaurantCollection(prev => prev.filter(restaurant => restaurant.id !== id))
         dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully deleted!', color: 'success' })

@@ -26,7 +26,7 @@ function RestaurantDetails(props) {
   useEffect(() => {
     async function fetchRestaurantData() {
       try {
-        const response = await axios.get(`/restaurants/${id}`)
+        const response = await axios.get(`/api/restaurants/${id}`)
         setRestaurant(response.data)
         fetchRestaurantReviews()
       } catch (err) {
@@ -36,7 +36,7 @@ function RestaurantDetails(props) {
     }
     async function fetchRestaurantReviews() {
       try {
-        const response = await axios.get(`/ratings/${id}`)
+        const response = await axios.get(`/api/ratings/${id}`)
         setRatingsCollection(response.data)
         setRatings(response.data.slice(0, counter))
         if (response.data.length > 5) setIsMoreRatings(true)
@@ -53,7 +53,7 @@ function RestaurantDetails(props) {
     const confirm = window.confirm('Are you sure you want to delete this restaurant?')
     if (confirm) {
       try {
-        await axios.delete(`/restaurants/${id}`)
+        await axios.delete(`/api/restaurants/${id}`)
         dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully deleted!', color: 'success' })
         history.push('/')
       } catch (err) {
@@ -90,7 +90,7 @@ function RestaurantDetails(props) {
       <div>description: {restaurant.description}</div>
       <div>location: {restaurant.location}</div>
       <div>pricerange: {restaurant.pricerange}</div>
-      {restaurant.rating ? <StarRating rating={restaurant.rating} count={restaurant.count} /> : 'No Ratings'}
+      {restaurant.rating > 0 ? <StarRating rating={restaurant.rating} count={restaurant.count} /> : 'No Ratings'}
       <div>rating: {restaurant.rating}</div>
       <div>count: {restaurant.count}</div>
       {state.loggedIn && (

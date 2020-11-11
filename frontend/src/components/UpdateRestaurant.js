@@ -34,7 +34,7 @@ function UpdateRestaurant(props) {
     if (state.loggedIn) {
       async function fetchRestaurantData() {
         try {
-          const response = await axios.get(`/restaurants/${id}`)
+          const response = await axios.get(`/api/restaurants/${id}`)
           setRestaurant(response.data)
           setIsLoading(false)
         } catch (err) {
@@ -59,7 +59,7 @@ function UpdateRestaurant(props) {
       let lat = apiResponse.data.results[0].geometry.location.lat
       let lng = apiResponse.data.results[0].geometry.location.lng
 
-      await axios.put(`/restaurants/${id}`, {
+      await axios.put(`/api/restaurants/${id}`, {
         name: restaurant.name,
         description: restaurant.description,
         priceRange: parseInt(restaurant.pricerange),

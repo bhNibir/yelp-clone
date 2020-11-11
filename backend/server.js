@@ -14,9 +14,9 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 // Routes
-app.use('/query', require('./routes/queryRouter'))
-app.use('/restaurants', require('./routes/restaurantRouter'))
-app.use('/ratings', require('./routes/ratingsRouter'))
+app.use('/api/query', require('./routes/queryRouter'))
+app.use('/api/restaurants', require('./routes/restaurantRouter'))
+app.use('/api/ratings', require('./routes/ratingsRouter'))
 
 // Server Listener
 app.listen(PORT, () => {

@@ -13,7 +13,7 @@ function SortRestaurants({ setRestaurants, setRestaurantCollection, restaurantCo
     e.preventDefault()
     if (locationType && location) {
       try {
-        const response = await axios.get(`/restaurants/search?locationType=${locationType}&location=${location}`)
+        const response = await axios.get(`/api/restaurants/search?locationType=${locationType}&location=${location}`)
         setRestaurants(response.data.slice(0, 10))
         setRestaurantCollection(response.data)
         setLocation('')
@@ -28,7 +28,7 @@ function SortRestaurants({ setRestaurants, setRestaurantCollection, restaurantCo
 
   async function resetRestaurantList() {
     try {
-      const response = await axios.get('/restaurants')
+      const response = await axios.get('/api/restaurants')
       setRestaurants(response.data.slice(0, 10))
       setRestaurantCollection(response.data)
       setShowButton(false)

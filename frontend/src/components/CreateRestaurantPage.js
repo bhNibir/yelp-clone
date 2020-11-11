@@ -33,7 +33,7 @@ function CreateRestaurantPage(props) {
       let lat = apiResponse.data.results[0].geometry.location.lat
       let lng = apiResponse.data.results[0].geometry.location.lng
 
-      const response = await axios.post(`/restaurants`, {
+      const response = await axios.post(`/api/restaurants`, {
         name: restaurant.name,
         description: restaurant.description,
         priceRange: parseInt(restaurant.pricerange),

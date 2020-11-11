@@ -21,7 +21,7 @@ function NewRatingInput({ id, setRatings, ratings, setRestaurant, restaurant, se
     if (newRating.restaurant_id && 1 <= parseFloat(newRating.rating) <= 5 && newRating.name && newRating.message) {
       try {
         // Sends off request to store new rating in database
-        const response = await axios.post(`/ratings/`, {
+        const response = await axios.post(`/api/ratings/`, {
           restaurant_id: newRating.restaurant_id,
           rating: parseFloat(newRating.rating),
           name: newRating.name,
