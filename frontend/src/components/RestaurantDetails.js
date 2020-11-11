@@ -6,6 +6,7 @@ import NewRatingInput from './NewRatingInput'
 import AppContext from '../AppContext'
 import StateContext from '../StateContext'
 import StarRating from './StarRating'
+import RestaurantMap from './RestaurantMap'
 
 function RestaurantDetails(props) {
   const [isLoading, setIsLoading] = useState(true)
@@ -83,6 +84,7 @@ function RestaurantDetails(props) {
   return (
     <>
       <h1>{restaurant.name}</h1>
+      <RestaurantMap restaurant={restaurant} />
       <h3>Page Details</h3>
       <div>name: {restaurant.name}</div>
       <div>description: {restaurant.description}</div>
