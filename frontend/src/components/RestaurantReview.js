@@ -28,10 +28,10 @@ function RestaurantReview(props) {
     let sumOfRatings = 0
     // Add each rating to the sum
     ratings.forEach(item => {
-      sumOfRatings += item.rating
+      sumOfRatings += parseFloat(item.rating)
     })
     // Subtracts the deleted rating from sum
-    sumOfRatings -= review.rating
+    sumOfRatings -= parseFloat(review.rating)
     // Calculates new rating
     let updatedRating = (sumOfRatings / (ratings.length - 1)).toFixed(1)
     // Updates the restaurants rating & count state

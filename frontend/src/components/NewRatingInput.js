@@ -48,7 +48,7 @@ function NewRatingInput({ id, setRatings, ratings, setRestaurant, restaurant, se
     let sumOfRatings = parseFloat(newRating)
     // Loops over each rating to get sum
     ratings.forEach(review => {
-      sumOfRatings += review.rating
+      sumOfRatings += parseFloat(review.rating)
     })
     // Calculates new average rating
     let updatedRating = (sumOfRatings / (ratings.length + 1)).toFixed(1)

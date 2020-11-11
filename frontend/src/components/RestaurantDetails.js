@@ -83,13 +83,6 @@ function RestaurantDetails(props) {
   return (
     <>
       <h1>{restaurant.name}</h1>
-      <div>
-        {ratings.map(review => {
-          return <RestaurantReview key={review.id} review={review} setRatings={setRatings} ratings={ratings} setRestaurant={setRestaurant} restaurant={restaurant} setRatingsCollection={setRatingsCollection} />
-        })}
-      </div>
-      {isMoreRatings && <button onClick={() => setCounter(prev => prev + 5)}>Load More Ratings</button>}
-      <br />
       <h3>Page Details</h3>
       <div>name: {restaurant.name}</div>
       <div>description: {restaurant.description}</div>
@@ -105,9 +98,15 @@ function RestaurantDetails(props) {
         </>
       )}
       <br />
-      <br />
-      <br />
       <NewRatingInput id={id} setRatings={setRatings} ratings={ratings} setRestaurant={setRestaurant} restaurant={restaurant} setRatingsCollection={setRatingsCollection} />
+      <br />
+      <br />
+      <div>
+        {ratings.map(review => {
+          return <RestaurantReview key={review.id} review={review} setRatings={setRatings} ratings={ratings} setRestaurant={setRestaurant} restaurant={restaurant} setRatingsCollection={setRatingsCollection} />
+        })}
+      </div>
+      {isMoreRatings && <button onClick={() => setCounter(prev => prev + 5)}>Load More Ratings</button>}
     </>
   )
 }

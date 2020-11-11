@@ -18,7 +18,7 @@ function StarRating({ rating, count }) {
   }, [rating])
   return (
     <>
-      {stars} ({count})
+      {stars} {count ? `(${count})` : ''}
     </>
   )
 }
