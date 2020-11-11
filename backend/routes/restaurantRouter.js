@@ -7,12 +7,12 @@ const validateRestaurantInput = require('../middleware/validateRestaurantInput')
 router.get('/search', async (req, res) => {
   const { locationType, location } = req.query
   const locationTypes = ['street', 'city', 'province', 'country', 'postalcode']
-  // Protects from SQL injection attack
+  // Helps protect against SQL injection attack
   if (!locationTypes.includes(locationType)) {
     return res.status(403).json('Invalid Location Type.')
   }
   try {
-    const results = await db.query(`SELECT restaurants.id, restaurants.name, description, location, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE UPPER(restaurants.${locationType}) LIKE UPPER($1) GROUP BY restaurants.id`, [`%${location}%`])
+    const results = await db.query(`SELECT restaurants.id, restaurants.name, description, longtitude, latitude, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE UPPER(restaurants.${locationType}) LIKE UPPER($1) GROUP BY restaurants.id`, [`%${location}%`])
     res.status(200).json(results.rows)
   } catch (err) {
     console.log(err)
@@ -23,7 +23,7 @@ router.get('/search', async (req, res) => {
 // Get all restaurants
 router.get('/', async (req, res) => {
   try {
-    const results = await db.query('SELECT restaurants.id, restaurants.name, description, location, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) GROUP BY restaurants.id')
+    const results = await db.query('SELECT restaurants.id, restaurants.name, description, longtitude, latitude, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) GROUP BY restaurants.id')
     const data = results.rows
     res.status(200).json(data)
   } catch (err) {
@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
 // Get a single restaurant
 router.get('/:id', async (req, res) => {
   try {
-    const result = await db.query('SELECT restaurants.id, restaurants.name, description, location, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE restaurants.id = $1 GROUP BY restaurants.id', [req.params.id])
+    const result = await db.query('SELECT restaurants.id, restaurants.name, description, street, city, province, country, postalcode, longtitude, latitude, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE restaurants.id = $1 GROUP BY restaurants.id', [req.params.id])
     if (result.rows.length > 0) {
       const data = result.rows[0]
       res.status(200).json(data)
@@ -52,8 +52,8 @@ router.get('/:id', async (req, res) => {
 router.post('/', validateRestaurantInput, async (req, res) => {
   try {
     // Input will already be validated & ready to be inserted into database
-    const { name, description, location, priceRange } = req.body
-    const result = await db.query('INSERT INTO restaurants (name, description, location, priceRange) VALUES ($1, $2, $3, $4) RETURNING *', [name, description, location, priceRange])
+    const { name, description, priceRange, street, city, province, country, postalcode, longtitude, latitude } = req.body
+    const result = await db.query('INSERT INTO restaurants (name, description, priceRange, street, city, province, country, postalcode, longtitude, latitude) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *', [name, description, priceRange, street, city, province, country, postalcode, longtitude, latitude])
     const data = result.rows[0]
     res.status(201).json(data)
   } catch (err) {
@@ -66,8 +66,8 @@ router.post('/', validateRestaurantInput, async (req, res) => {
 router.put('/:id', isRestaurantIDValid, validateRestaurantInput, async (req, res) => {
   try {
     // Input will already be validated & ready to be inserted into database
-    const { name, description, location, priceRange } = req.body
-    const result = await db.query('UPDATE restaurants SET name = $1, description = $2, location = $3, priceRange = $4 WHERE id = $5 RETURNING *', [name, description, location, priceRange, req.params.id])
+    const { name, description, priceRange, street, city, province, country, postalcode, longtitude, latitude } = req.body
+    const result = await db.query('UPDATE restaurants SET name = $1, description = $2, priceRange = $3, street = $4, city = $5, province = $6, country = $7, postalcode = $8, longtitude = $9, latitude = $10 WHERE id = $11 RETURNING *', [name, description, priceRange, street, city, province, country, postalcode, longtitude, latitude, req.params.id])
     const data = result.rows[0]
     res.status(200).json(data)
   } catch (err) {

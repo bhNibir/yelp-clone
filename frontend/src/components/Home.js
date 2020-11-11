@@ -6,6 +6,8 @@ import AppContext from '../AppContext'
 import StateContext from '../StateContext'
 import SortRestaurants from './SortRestaurants'
 import StarRating from './StarRating'
+import HomeMap from './HomeMap'
+import RestaurantContext from '../RestaurantContext'
 
 function Home(props) {
   // Set up state
@@ -13,6 +15,7 @@ function Home(props) {
   const [restaurantCollection, setRestaurantCollection] = useState([])
   const [restaurants, setRestaurants] = useState([])
   const [counter, setCounter] = useState(10)
+  const [sortCount, setSortCount] = useState(0)
 
   const dispatch = useContext(AppContext)
   const state = useContext(StateContext)
@@ -78,8 +81,11 @@ function Home(props) {
 
   return (
     <>
+      <RestaurantContext.Provider value={{ restaurantCollection, sortCount }}>
+        <HomeMap />
+      </RestaurantContext.Provider>
       <h1>Restaurants List</h1>
-      <SortRestaurants setRestaurants={setRestaurants} setRestaurantCollection={setRestaurantCollection} restaurantCollection={restaurantCollection} />
+      <SortRestaurants setRestaurants={setRestaurants} setSortCount={setSortCount} setRestaurantCollection={setRestaurantCollection} restaurantCollection={restaurantCollection} />
       <div>
         {restaurants.map(restaurant => {
           let dollarAmount = ''

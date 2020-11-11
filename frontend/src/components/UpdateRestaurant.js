@@ -6,7 +6,16 @@ import StateContext from '../StateContext'
 
 function UpdateRestaurant(props) {
   const [isLoading, setIsLoading] = useState(true)
-  const [restaurant, setRestaurant] = useState()
+  const [restaurant, setRestaurant] = useState({
+    name: '',
+    description: '',
+    pricerange: '',
+    street: '',
+    city: '',
+    province: '',
+    country: '',
+    postalcode: ''
+  })
 
   let history = useHistory()
   const dispatch = useContext(AppContext)
@@ -40,11 +49,27 @@ function UpdateRestaurant(props) {
   async function submitHandler(e) {
     e.preventDefault()
     try {
+      let location = `${restaurant.street} ${restaurant.city} ${restaurant.province} ${restaurant.country}`
+      const apiResponse = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+        params: {
+          address: location,
+          key: process.env.REACT_APP_API_KEY
+        }
+      })
+      let lat = apiResponse.data.results[0].geometry.location.lat
+      let lng = apiResponse.data.results[0].geometry.location.lng
+
       await axios.put(`/restaurants/${id}`, {
         name: restaurant.name,
         description: restaurant.description,
-        location: restaurant.location,
-        priceRange: parseInt(restaurant.pricerange)
+        priceRange: parseInt(restaurant.pricerange),
+        street: restaurant.street,
+        city: restaurant.city,
+        province: restaurant.province,
+        country: restaurant.country,
+        postalcode: restaurant.postalcode,
+        longtitude: lng,
+        latitude: lat
       })
       history.push(`/restaurant/${id}`)
       dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully updated!', color: 'success' })
@@ -67,8 +92,12 @@ function UpdateRestaurant(props) {
       <form onSubmit={submitHandler}>
         <input name="name" placeholder="Name" type="text" value={restaurant.name} onChange={e => updateInput(e)} required />
         <input name="description" placeholder="Description" type="text" value={restaurant.description} onChange={e => updateInput(e)} required />
-        <input name="location" placeholder="Location" type="text" value={restaurant.location} onChange={e => updateInput(e)} required />
         <input name="pricerange" placeholder="Price Range" type="number" value={restaurant.pricerange} onChange={e => updateInput(e)} required max="5" min="1" />
+        <input name="street" placeholder="Street" type="text" value={restaurant.street} onChange={e => updateInput(e)} required />
+        <input name="city" placeholder="City" type="text" value={restaurant.city} onChange={e => updateInput(e)} required />
+        <input name="province" placeholder="Province" type="text" value={restaurant.province} onChange={e => updateInput(e)} required />
+        <input name="country" placeholder="Country" type="text" value={restaurant.country} onChange={e => updateInput(e)} required />
+        <input name="postalcode" placeholder="Postal Code" type="text" value={restaurant.postalcode} onChange={e => updateInput(e)} required />
         <button type="submit">Update Restaurant</button>
       </form>
     </>

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import AppContext from '../AppContext'
 
-function SortRestaurants({ setRestaurants, setRestaurantCollection, restaurantCollection }) {
+function SortRestaurants({ setRestaurants, setRestaurantCollection, restaurantCollection, setSortCount }) {
   const [locationType, setLocationType] = useState('')
   const [location, setLocation] = useState('')
   const [showButton, setShowButton] = useState(false)
@@ -67,6 +67,7 @@ function SortRestaurants({ setRestaurants, setRestaurantCollection, restaurantCo
     }
     setRestaurants(newList.slice(0, 10))
     setRestaurantCollection(newList)
+    setSortCount(prev => prev + 1)
   }
   return (
     <>

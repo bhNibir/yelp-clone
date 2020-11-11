@@ -95,7 +95,7 @@ function RestaurantDetails(props) {
       <div>description: {restaurant.description}</div>
       <div>location: {restaurant.location}</div>
       <div>pricerange: {restaurant.pricerange}</div>
-      <StarRating rating={restaurant.rating} />
+      {restaurant.rating ? <StarRating rating={restaurant.rating} count={restaurant.count} /> : 'No Ratings'}
       <div>rating: {restaurant.rating}</div>
       <div>count: {restaurant.count}</div>
       {state.loggedIn && (
