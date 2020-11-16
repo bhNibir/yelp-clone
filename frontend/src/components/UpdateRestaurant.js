@@ -55,7 +55,7 @@ function UpdateRestaurant(props) {
       const apiResponse = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: {
           address: location,
-          key: process.env.REACT_APP_API_KEY
+          key: 'AIzaSyCcbP47PnbbLWJ4T9GdciB5LCrFSSIP-EA'
         }
       })
       let lat = apiResponse.data.results[0].geometry.location.lat
