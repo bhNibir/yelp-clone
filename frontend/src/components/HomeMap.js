@@ -3,6 +3,8 @@ import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react'
 import { useHistory } from 'react-router-dom'
 import RestaurantContext from '../RestaurantContext'
 import InfoWindowEx from './InfoWindowEx'
+import axios from 'axios'
+import AppContext from '../AppContext'
 
 function MapContainer(props) {
   const { restaurantCollection, sortCount } = useContext(RestaurantContext)
@@ -10,6 +12,7 @@ function MapContainer(props) {
   const [selectedMarker, setSelectedMarker] = useState(null)
   const [rerender, setRerender] = useState(0)
   const history = useHistory()
+  const dispatch = useContext(AppContext)
 
   const [key, setKey] = useState(0)
   const [pastList, setPastList] = useState({
@@ -29,13 +32,24 @@ function MapContainer(props) {
             key={restaurant.id}
             position={{ lat, lng }}
             onClick={() => {
-              setSelectedMarker(restaurant)
+              handleMarkerClick(restaurant)
             }}
           />
         )
       })
     )
   }, [key])
+
+  // Marker Click Handler
+  async function handleMarkerClick(restaurant) {
+    try {
+      const response = await axios.get(`/api/restaurants/${restaurant.id}`)
+      setSelectedMarker(response.data)
+    } catch (err) {
+      setSelectedMarker(restaurant)
+      dispatch({ type: 'FlashMessage', value: 'Error retrieving restaurant image.', color: 'error' })
+    }
+  }
 
   // Rerenders the component to fix bug where info window was not appearing on first marker click
   useEffect(() => {
@@ -108,6 +122,13 @@ function MapContainer(props) {
             visible={true}
           >
             <div>
+              {selectedMarker.images[0] && (
+                <div>
+                  <div style={{ width: '50px', height: '50px' }}>
+                    <img style={{ width: '50px', height: '50px' }} src={selectedMarker.images[0].url_location} />
+                  </div>
+                </div>
+              )}
               <h3>{selectedMarker.name}</h3>
               <button type="button" onClick={() => redirectRestaurantDetails(selectedMarker.id)}>
                 View Details
