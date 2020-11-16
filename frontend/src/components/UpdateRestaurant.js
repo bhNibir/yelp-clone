@@ -17,6 +17,7 @@ function UpdateRestaurant(props) {
     postalcode: ''
   })
   const [file, setFile] = useState()
+  const [uploadedImages, setUploadedImages] = useState()
 
   let history = useHistory()
   const dispatch = useContext(AppContext)
@@ -99,7 +100,23 @@ function UpdateRestaurant(props) {
 
   // Update File State
   function updateFileState(e) {
-    setFile(e.currentTarget.files)
+    let urlList = []
+    let files = []
+    // Loops over uploaded files, and only saves png/jpeg files that are below 2MB
+    for (var i = 0, n = e.currentTarget.files.length; i < n; i++) {
+      let currentFile = e.currentTarget.files[i]
+      if (currentFile.type == 'image/png' || currentFile.type == 'image/jpeg') {
+        // Make sure file is less than 2MB
+        if (currentFile.size < 2097152) {
+          files.push(currentFile)
+          urlList.push(URL.createObjectURL(currentFile))
+        } else {
+          dispatch({ type: 'FlashMessage', value: `${currentFile.name} is too big! Images must be below 2MB`, color: 'error' })
+        }
+      }
+    }
+    setFile(files)
+    setUploadedImages(urlList)
   }
 
   if (isLoading) {
@@ -121,6 +138,14 @@ function UpdateRestaurant(props) {
         <input type="file" onChange={updateFileState} multiple />
         <button type="submit">Update Restaurant</button>
       </form>
+      {uploadedImages &&
+        uploadedImages.map((url, index) => (
+          <div key={index}>
+            <div style={{ width: '200px', height: '200px' }}>
+              <img style={{ width: '200px', height: '200px' }} src={url} />
+            </div>
+          </div>
+        ))}
     </>
   )
 }
