@@ -142,7 +142,7 @@ function MapContainer(props) {
 }
 
 export default GoogleApiWrapper({
-  apiKey: `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_API_KEY}`
+  apiKey: `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyCcbP47PnbbLWJ4T9GdciB5LCrFSSIP-EA`
 })(MapContainer)
 
 /* import React, { useEffect, useState, useContext } from 'react'
