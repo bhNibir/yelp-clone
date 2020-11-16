@@ -48,7 +48,19 @@ function RestaurantDetails(props) {
     fetchRestaurantData()
   }, [id])
 
-  // Handle Delete Button Click
+  // Handle Restaurant Image Delete
+  async function deleteImage(id) {
+    try {
+      await axios.delete(`/api/restaurants/delete-image/${id}`)
+      let updatedImages = restaurant.images.filter(image => image.id !== id)
+      setRestaurant({ ...restaurant, images: updatedImages })
+      dispatch({ type: 'FlashMessage', value: 'Image deleted successfully!', color: 'success' })
+    } catch (err) {
+      dispatch({ type: 'FlashMessage', value: err.response.data, color: 'error' })
+    }
+  }
+
+  // Handle Restaurant Delete Button Click
   async function handleDelete(id) {
     const confirm = window.confirm('Are you sure you want to delete this restaurant?')
     if (confirm) {
@@ -84,6 +96,18 @@ function RestaurantDetails(props) {
   return (
     <>
       <h1>{restaurant.name}</h1>
+      <Link to={`/restaurant/${restaurant.id}/update`}>Add Photo(s)</Link>
+      <br />
+      <br />
+      {restaurant.images &&
+        restaurant.images.map(image => (
+          <div key={image.id}>
+            <button onClick={() => deleteImage(image.id)}>delete image by clicking this button!</button>
+            <div style={{ width: '200px', height: '200px' }}>
+              <img style={{ width: '200px', height: '200px' }} src={image.url_location} />
+            </div>
+          </div>
+        ))}
       <RestaurantMap restaurant={restaurant} />
       <h3>Page Details</h3>
       <div>name: {restaurant.name}</div>

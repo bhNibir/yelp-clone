@@ -4,4 +4,4 @@ CREATE TABLE restaurants (id BIGSERIAL PRIMARY KEY NOT NULL, name VARCHAR(255) N
 
 CREATE TABLE ratings (id BIGSERIAL PRIMARY KEY NOT NULL, restaurant_id BIGINT NOT NULL REFERENCES restaurants(id) ON DELETE CASCADE, rating NUMERIC NOT NULL check(rating >= 1 and rating <= 5), name VARCHAR(255) NOT NULL, message TEXT NOT NULL, timestamp timestamp default current_timestamp);
 
-INSERT INTO ratings (restaurant_id, rating, name, message) VALUES (1, 3, 'josh', 'This is a great restaurant!')
+CREATE TABLE restaurant_images (id BIGSERIAL PRIMARY KEY NOT NULL, restaurant_id BIGINT NOT NULL REFERENCES restaurants(id) ON DELETE CASCADE, url_location TEXT NOT NULL)

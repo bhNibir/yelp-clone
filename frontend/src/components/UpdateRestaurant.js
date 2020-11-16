@@ -16,6 +16,7 @@ function UpdateRestaurant(props) {
     country: '',
     postalcode: ''
   })
+  const [file, setFile] = useState()
 
   let history = useHistory()
   const dispatch = useContext(AppContext)
@@ -59,7 +60,8 @@ function UpdateRestaurant(props) {
       let lat = apiResponse.data.results[0].geometry.location.lat
       let lng = apiResponse.data.results[0].geometry.location.lng
 
-      await axios.put(`/api/restaurants/${id}`, {
+      // Update restaurant details in database
+      const response = await axios.put(`/api/restaurants/${id}`, {
         name: restaurant.name,
         description: restaurant.description,
         priceRange: parseInt(restaurant.pricerange),
@@ -71,6 +73,18 @@ function UpdateRestaurant(props) {
         longtitude: lng,
         latitude: lat
       })
+
+      if (file) {
+        let formData = new FormData()
+        for (let i = 0; i < file.length; i++) {
+          formData.append(`image`, file[i])
+        }
+
+        await axios.post(`/api/restaurants/upload-image/${response.data.id}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+      }
+
       history.push(`/restaurant/${id}`)
       dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully updated!', color: 'success' })
     } catch (err) {
@@ -78,8 +92,14 @@ function UpdateRestaurant(props) {
     }
   }
 
+  // Update field input
   function updateInput(e) {
     setRestaurant({ ...restaurant, [e.currentTarget.name]: e.currentTarget.value })
+  }
+
+  // Update File State
+  function updateFileState(e) {
+    setFile(e.currentTarget.files)
   }
 
   if (isLoading) {
@@ -98,6 +118,7 @@ function UpdateRestaurant(props) {
         <input name="province" placeholder="Province" type="text" value={restaurant.province} onChange={e => updateInput(e)} required />
         <input name="country" placeholder="Country" type="text" value={restaurant.country} onChange={e => updateInput(e)} required />
         <input name="postalcode" placeholder="Postal Code" type="text" value={restaurant.postalcode} onChange={e => updateInput(e)} required />
+        <input type="file" onChange={updateFileState} multiple />
         <button type="submit">Update Restaurant</button>
       </form>
     </>

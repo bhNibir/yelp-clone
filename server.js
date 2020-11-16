@@ -9,6 +9,7 @@ const app = express()
 // Environmental Variables
 const PORT = process.env.PORT
 
+// Static content configuration
 app.use(express.static(path.join(__dirname, 'frontend', 'build')))
 
 // Middleware

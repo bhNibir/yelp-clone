@@ -15,6 +15,7 @@ function CreateRestaurantPage(props) {
     country: '',
     postalcode: ''
   })
+  const [file, setFile] = useState()
 
   let history = useHistory()
   const dispatch = useContext(AppContext)
@@ -33,6 +34,7 @@ function CreateRestaurantPage(props) {
       let lat = apiResponse.data.results[0].geometry.location.lat
       let lng = apiResponse.data.results[0].geometry.location.lng
 
+      // Add restaurant to database
       const response = await axios.post(`/api/restaurants`, {
         name: restaurant.name,
         description: restaurant.description,
@@ -45,6 +47,18 @@ function CreateRestaurantPage(props) {
         longtitude: lng,
         latitude: lat
       })
+
+      if (file) {
+        let formData = new FormData()
+        for (let i = 0; i < file.length; i++) {
+          formData.append(`image`, file[i])
+        }
+
+        await axios.post(`/api/restaurants/upload-image/${response.data.id}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+      }
+
       dispatch({ type: 'FlashMessage', value: 'Restaurant was successfully created!', color: 'success' })
       history.push(`/restaurant/${response.data.id}`)
     } catch (err) {
@@ -52,8 +66,14 @@ function CreateRestaurantPage(props) {
     }
   }
 
+  // Update field input
   function updateInput(e) {
     setRestaurant({ ...restaurant, [e.currentTarget.name]: e.currentTarget.value })
+  }
+
+  // Update File State
+  function updateFileState(e) {
+    setFile(e.currentTarget.files)
   }
 
   // Redirect if user not logged in
@@ -76,8 +96,10 @@ function CreateRestaurantPage(props) {
         <input name="province" placeholder="Province" type="text" value={restaurant.province} onChange={e => updateInput(e)} required />
         <input name="country" placeholder="Country" type="text" value={restaurant.country} onChange={e => updateInput(e)} required />
         <input name="postalcode" placeholder="Postal Code" type="text" value={restaurant.postalcode} onChange={e => updateInput(e)} required />
+        <input type="file" onChange={updateFileState} multiple />
         <button type="submit">Create New Restaurant</button>
       </form>
+      <div>{file && file.name}</div>
     </>
   )
 }

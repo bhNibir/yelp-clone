@@ -2,6 +2,7 @@ const router = require('express').Router()
 const db = require('../db')
 const isRestaurantIDValid = require('../middleware/isRestaurantIDValid')
 const validateRestaurantInput = require('../middleware/validateRestaurantInput')
+const upload = require('../middleware/uploadImage')
 
 // Search for restaurant
 router.get('/search', async (req, res) => {
@@ -14,6 +15,30 @@ router.get('/search', async (req, res) => {
   try {
     const results = await db.query(`SELECT restaurants.id, restaurants.name, description, longtitude, latitude, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE UPPER(restaurants.${locationType}) LIKE UPPER($1) GROUP BY restaurants.id`, [`%${location}%`])
     res.status(200).json(results.rows)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json('There has been an error. Please try again later.')
+  }
+})
+
+// Upload restaurant image
+router.post('/upload-image/:id', upload.array('image', 5), async (req, res) => {
+  try {
+    for (var i = 0; i < req.files.length; i++) {
+      await db.query('INSERT INTO restaurant_images (restaurant_id, url_location) VALUES ($1, $2)', [req.params.id, req.files[i].location])
+    }
+    res.status(200).json('success')
+  } catch (err) {
+    console.log(err)
+    res.status(500).json('There has been an error. Please try again later.')
+  }
+})
+
+// Remove Restaurant Image From Database
+router.delete('/delete-image/:id', async (req, res) => {
+  try {
+    await db.query('DELETE FROM restaurant_images WHERE id = $1', [req.params.id])
+    res.status(200).json('Successfully deleted image.')
   } catch (err) {
     console.log(err)
     res.status(500).json('There has been an error. Please try again later.')
@@ -37,7 +62,11 @@ router.get('/:id', async (req, res) => {
   try {
     const result = await db.query('SELECT restaurants.id, restaurants.name, description, street, city, province, country, postalcode, longtitude, latitude, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE restaurants.id = $1 GROUP BY restaurants.id', [req.params.id])
     if (result.rows.length > 0) {
-      const data = result.rows[0]
+      let data = result.rows[0]
+      // Fetch restaurant images
+      const images = await db.query('SELECT id, url_location FROM restaurant_images WHERE restaurant_id = $1', [req.params.id])
+      // Add to data response
+      data.images = images.rows
       res.status(200).json(data)
     } else {
       res.status(404).json('Restaurant could not be found.')
