@@ -96,13 +96,13 @@ function RestaurantDetails(props) {
   return (
     <>
       <h1>{restaurant.name}</h1>
-      <Link to={`/restaurant/${restaurant.id}/update`}>Add Photo(s)</Link>
+      {state.loggedIn && <Link to={`/restaurant/${restaurant.id}/update`}>Add Photo(s)</Link>}
       <br />
       <br />
       {restaurant.images &&
         restaurant.images.map(image => (
           <div key={image.id}>
-            <button onClick={() => deleteImage(image.id)}>delete image by clicking this button!</button>
+            {state.loggedIn && <button onClick={() => deleteImage(image.id)}>delete image by clicking this button!</button>}
             <div style={{ width: '200px', height: '200px' }}>
               <img style={{ width: '200px', height: '200px' }} src={image.url_location} />
             </div>
