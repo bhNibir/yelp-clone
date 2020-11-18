@@ -5,13 +5,21 @@ function FlashMessage({ state }) {
     e.currentTarget.style.display = 'none'
   }
 
+  function getColor(color) {
+    if (color == 'success') {
+      return 'alert-success'
+    } else if (color == 'error') {
+      return 'alert-danger'
+    }
+  }
+
   return (
     <div className="flash-message-container">
       {state.flashMessages.length > 0 &&
         state.flashMessages.map((flashMessage, index) => {
           return (
-            <div key={index} className={'alert ' + flashMessage.color} onAnimationEnd={e => handleRemove(e)}>
-              <div className="flashMessage">{flashMessage.message}</div>
+            <div key={index} className={'alert ' + getColor(flashMessage.color)} onAnimationEnd={e => handleRemove(e)}>
+              {flashMessage.message}
             </div>
           )
         })}

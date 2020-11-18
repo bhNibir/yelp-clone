@@ -104,13 +104,13 @@ function MapContainer(props) {
   }
   const containerStyle = {
     position: 'relative',
-    height: '70vh',
+    height: '50vh',
     width: '100%'
   }
 
   return (
     <>
-      <Map google={props.google} zoom={zoomLevel()} key={key} initialCenter={coords()} style={mapStyles} containerStyle={containerStyle}>
+      <Map google={props.google} zoom={zoomLevel()} key={key} initialCenter={coords()} style={mapStyles} containerStyle={containerStyle} disableDefaultUI={true} zoomControl={true} streetViewControl={true}>
         {markers}
         {selectedMarker && (
           <InfoWindowEx
@@ -121,18 +121,23 @@ function MapContainer(props) {
             }}
             visible={true}
           >
-            <div>
+            <div className="d-flex">
               {selectedMarker.images[0] && (
                 <div>
-                  <div style={{ width: '50px', height: '50px' }}>
-                    <img style={{ width: '50px', height: '50px' }} src={selectedMarker.images[0].url_location} />
+                  <div style={{ width: '80px', height: '80px' }}>
+                    <img style={{ width: '80px', height: '80px' }} src={selectedMarker.images[0].url_location} />
                   </div>
                 </div>
               )}
-              <h3>{selectedMarker.name}</h3>
-              <button type="button" onClick={() => redirectRestaurantDetails(selectedMarker.id)}>
-                View Details
-              </button>
+              <div className="ml-2">
+                <h5 className="m-0 info-window-title">{selectedMarker.name}</h5>
+                <p className="m-0 mt-1">
+                  {selectedMarker.street}, <br /> {selectedMarker.city}, {selectedMarker.province}, {selectedMarker.country}
+                </p>
+                <button type="button" className="btn btn-link m-0 p-0 info-window-link" onClick={() => redirectRestaurantDetails(selectedMarker.id)}>
+                  View Details
+                </button>
+              </div>
             </div>
           </InfoWindowEx>
         )}

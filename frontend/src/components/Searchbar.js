@@ -52,25 +52,34 @@ function Searchbar(props) {
   }, [searchQuery])
 
   return (
-    <>
-      <div>{searchLoading && <h3>Loading...</h3>}</div>
-      <input type="text" className="search-input" placeholder="Search for restaurant..." value={searchQuery} onChange={e => setSearchQuery(e.currentTarget.value)} onClick={() => setShowResults(true)} />
+    <div className="nav-search">
+      {searchLoading && <div className="loader"></div>}
+      <div className="search-icon">
+        <i className="fa fa-search" aria-hidden="true"></i>
+      </div>
+      <input type="text" className="search-input" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.currentTarget.value)} onClick={() => setShowResults(true)} />
       {showResults && searchResults.length > 0 && (
-        <ul>
-          {searchResults.map(result => {
-            return <SingleSearchResult key={result.id} {...result} setSearchQuery={setSearchQuery} />
-          })}
-        </ul>
+        <>
+          <div className="search-results-decoration"></div>
+          <ul className="search-results">
+            {searchResults.map(result => {
+              return <SingleSearchResult key={result.id} {...result} setSearchQuery={setSearchQuery} />
+            })}
+          </ul>
+        </>
       )}
-    </>
+    </div>
   )
 }
 
 function SingleSearchResult(props) {
   return (
     <li className="search-result">
-      <Link to={`/restaurant/${props.id}`} onClick={() => props.setSearchQuery('')}>
-        <div>{props.name}</div>
+      <Link to={`/restaurant/${props.id}`} className="search-result-link" onClick={() => props.setSearchQuery('')}>
+        <h6 className="search-result-name">{props.name}</h6>
+        <p className="search-result-address">
+          {props.city}, {props.province}, {props.country}
+        </p>
       </Link>
     </li>
   )

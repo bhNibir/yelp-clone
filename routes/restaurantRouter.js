@@ -13,7 +13,7 @@ router.get('/search', async (req, res) => {
     return res.status(403).json('Invalid Location Type.')
   }
   try {
-    const results = await db.query(`SELECT restaurants.id, restaurants.name, description, longtitude, latitude, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE UPPER(restaurants.${locationType}) LIKE UPPER($1) GROUP BY restaurants.id`, [`%${location}%`])
+    const results = await db.query(`SELECT restaurants.id, restaurants.name, description, longtitude, latitude, priceRange, street, city, province, country, postalcode, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) WHERE UPPER(restaurants.${locationType}) LIKE UPPER($1) GROUP BY restaurants.id`, [`%${location}%`])
     res.status(200).json(results.rows)
   } catch (err) {
     console.log(err)
@@ -48,7 +48,7 @@ router.delete('/delete-image/:id', async (req, res) => {
 // Get all restaurants
 router.get('/', async (req, res) => {
   try {
-    const results = await db.query('SELECT restaurants.id, restaurants.name, description, longtitude, latitude, priceRange, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) GROUP BY restaurants.id')
+    const results = await db.query('SELECT restaurants.id, restaurants.name, description, longtitude, latitude, priceRange, street, city, province, country, postalcode, ROUND(AVG(rating), 1) AS rating, COUNT(rating) FROM restaurants LEFT OUTER JOIN ratings ON (restaurants.id = ratings.restaurant_id) GROUP BY restaurants.id')
     const data = results.rows
     res.status(200).json(data)
   } catch (err) {

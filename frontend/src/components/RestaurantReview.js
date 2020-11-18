@@ -38,19 +38,27 @@ function RestaurantReview(props) {
     setRestaurant({ ...restaurant, rating: updatedRating, count: restaurant.count - 1 })
   }
 
+  function reviewColor() {
+    if (review.rating < 3) {
+      return 'bg-danger'
+    } else {
+      return 'bg-success'
+    }
+  }
+
   return (
-    <>
-      <StarRating rating={review.rating} />
-      <div>{review.rating}</div>
+    <div className="review-container">
       <div>{review.name}</div>
-      <div>{review.message}</div>
+      <div>
+        <StarRating rating={review.rating} />
+      </div>
+      <p>{review.message}</p>
       {state.loggedIn && (
-        <button type="submit" onClick={handleDelete}>
-          Delete Review
+        <button type="submit" className="review-btn btn btn-light" onClick={handleDelete}>
+          <i className="fa fa-times" aria-hidden="true"></i>
         </button>
       )}
-      <br />
-    </>
+    </div>
   )
 }
 

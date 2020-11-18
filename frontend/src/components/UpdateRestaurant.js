@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import axios from 'axios'
 import AppContext from '../AppContext'
 import StateContext from '../StateContext'
+import PageLoader from './PageLoader'
 
 function UpdateRestaurant(props) {
   const [isLoading, setIsLoading] = useState(true)
@@ -120,32 +121,78 @@ function UpdateRestaurant(props) {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <PageLoader />
   }
 
   return (
     <>
-      <h1>Update Restaurant</h1>
-      <form onSubmit={submitHandler}>
-        <input name="name" placeholder="Name" type="text" value={restaurant.name} onChange={e => updateInput(e)} required />
-        <input name="description" placeholder="Description" type="text" value={restaurant.description} onChange={e => updateInput(e)} required />
-        <input name="pricerange" placeholder="Price Range" type="number" value={restaurant.pricerange} onChange={e => updateInput(e)} required max="5" min="1" />
-        <input name="street" placeholder="Street" type="text" value={restaurant.street} onChange={e => updateInput(e)} required />
-        <input name="city" placeholder="City" type="text" value={restaurant.city} onChange={e => updateInput(e)} required />
-        <input name="province" placeholder="Province" type="text" value={restaurant.province} onChange={e => updateInput(e)} required />
-        <input name="country" placeholder="Country" type="text" value={restaurant.country} onChange={e => updateInput(e)} required />
-        <input name="postalcode" placeholder="Postal Code" type="text" value={restaurant.postalcode} onChange={e => updateInput(e)} required />
-        <input type="file" onChange={updateFileState} multiple />
-        <button type="submit">Update Restaurant</button>
-      </form>
-      {uploadedImages &&
-        uploadedImages.map((url, index) => (
-          <div key={index}>
-            <div style={{ width: '200px', height: '200px' }}>
-              <img style={{ width: '200px', height: '200px' }} src={url} />
+      <div className="restaurant-form">
+        <h1 className="create-title">Update Restaurant</h1>
+        <form onSubmit={submitHandler}>
+          <div className="form-group">
+            <label htmlFor="name">Name:</label>
+            <input className="form-control" id="name" name="name" placeholder="Name" type="text" value={restaurant.name} onChange={e => updateInput(e)} required />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="street">Street:</label>
+            <input className="form-control" id="street" name="street" placeholder="Street" type="text" value={restaurant.street} onChange={e => updateInput(e)} required />
+          </div>
+          <div className="form-row">
+            <div className="form-group col-md-4">
+              <label htmlFor="city">City:</label>
+              <input className="form-control" id="city" name="city" placeholder="City" type="text" value={restaurant.city} onChange={e => updateInput(e)} required />
+            </div>
+            <div className="form-group col-md-4">
+              <label htmlFor="province">Province:</label>
+              <input className="form-control" id="province" name="province" placeholder="Province" type="text" value={restaurant.province} onChange={e => updateInput(e)} required />
+            </div>
+            <div className="form-group col-md-4">
+              <label htmlFor="country">Country:</label>
+              <input className="form-control" id="country" name="country" placeholder="Country" type="text" value={restaurant.country} onChange={e => updateInput(e)} required />
             </div>
           </div>
-        ))}
+
+          <div className="form-row">
+            <div className="form-group col-md-4">
+              <label htmlFor="postalcode">Postal Code:</label>
+              <input className="form-control" id="postalcode" name="postalcode" placeholder="Postal Code" type="text" value={restaurant.postalcode} onChange={e => updateInput(e)} required />
+            </div>
+            <div className="form-group col-md-4">
+              <label htmlFor="pricerange">Price Range:</label>
+              <input className="form-control" id="pricerange" name="pricerange" placeholder="Price Range" type="number" value={restaurant.pricerange} onChange={e => updateInput(e)} required max="5" min="1" />
+            </div>
+            <div className="form-group col-md-4">
+              <label>Add Photos (Optional):</label>
+              <div className="custom-file">
+                <input type="file" className="custom-file-input" id="image-file" onChange={updateFileState} multiple />
+                <label className="custom-file-label" htmlFor="image-file">
+                  Choose file...
+                </label>
+              </div>
+            </div>
+          </div>
+          {uploadedImages && uploadedImages[0] && <label>New Images:</label>}
+          <div className="image-container">
+            {uploadedImages &&
+              uploadedImages.map((url, index) => (
+                <div key={index}>
+                  <div style={{ width: '70px', height: '70px' }}>
+                    <img style={{ width: '70px', height: '70px' }} src={url} />
+                  </div>
+                </div>
+              ))}
+          </div>
+          <div className="form-group">
+            <label htmlFor="description">Description:</label>
+            <textarea className="form-control" id="description" name="description" placeholder="Description" type="text" value={restaurant.description} onChange={e => updateInput(e)} required />
+          </div>
+          <div className="my-4"></div>
+          <button type="submit" className="btn create-btn btn-block mx-auto">
+            Update Restaurant
+          </button>
+        </form>
+      </div>
     </>
   )
 }

@@ -11,8 +11,8 @@ function RestaurantMap(props) {
   }
   const containerStyle = {
     position: 'relative',
-    height: '400px',
-    width: '400px'
+    height: '300px',
+    width: '300px'
   }
 
   return (
