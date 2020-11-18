@@ -139,6 +139,15 @@ body {
   }
 }
 
+@media (max-width: 1200px) {
+  .desktop-nav-item {
+    display: none;
+  }
+  .navbar-nav {
+    text-align: center;
+  }
+}
+
 @media (max-width: 700px) {
   .nav-search {
     display: none;
@@ -170,16 +179,36 @@ HOME MAP
 .info-window-link {
   font-size: 0.9rem;
 }
-.home-map-info {
+.home-map-info-container {
   position: absolute;
-  z-index: 100;
+  z-index: 4;
+  display: flex;
+  transition: transform 0.5s ease;
+}
+.home-map-info {
   background: white;
   width: 300px;
   height: 50vh;
   overflow: scroll;
 }
+.map-info-hidden {
+  transform: translateX(-300px);
+}
+.close-map-info-btn {
+  background: white;
+  border: 1px solid lightgrey;
+  color: grey;
+  height: 50px;
+  width: 50px;
+  outline: none !important;
+  font-size: 1.5rem;
+}
+.close-map-info-btn:focus {
+  outline-color: lightgrey;
+}
 @media (max-width: 700px) {
-  .home-map-info {
+  .home-map-info,
+  .close-map-info-btn {
     display: none;
   }
 }

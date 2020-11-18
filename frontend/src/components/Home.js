@@ -27,8 +27,10 @@ function Home(props) {
     async function fetchData() {
       try {
         const response = await axios.get('/api/restaurants')
-        setRestaurantCollection(response.data)
-        setRestaurants(response.data.slice(0, 10))
+        // Sorts by highest rated
+        const restaurantList = response.data.sort((a, b) => b.rating - a.rating)
+        setRestaurantCollection(restaurantList)
+        setRestaurants(restaurantList.slice(0, 10))
         setIsLoading(false)
       } catch (err) {
         dispatch({ type: 'FlashMessage', value: 'Server is temporarily down. Please try again later.', color: 'error' })
@@ -76,6 +78,15 @@ function Home(props) {
     }
   }, [counter])
 
+  // Toggles Map Info Tab
+  function toggleInfoTab() {
+    if (document.querySelector('.home-map-info-container').classList.contains('map-info-hidden')) {
+      document.querySelector('.home-map-info-container').classList.remove('map-info-hidden')
+    } else {
+      document.querySelector('.home-map-info-container').classList.add('map-info-hidden')
+    }
+  }
+
   // Send back loading page until data has been retrieved
   if (isLoading) {
     return <PageLoader />
@@ -85,31 +96,36 @@ function Home(props) {
     <>
       <RestaurantContext.Provider value={{ restaurantCollection, sortCount }}>
         <div>
-          <div className="home-map-info">
-            {restaurants && (
-              <>
-                {restaurants.map(restaurant => {
-                  let dollarAmount = ''
-                  for (var i = 0; i < restaurant.pricerange; i++) {
-                    dollarAmount += '$'
-                  }
-                  return (
-                    <div key={restaurant.id} className="border p-2 google-maps-result">
-                      <div className="d-flex justify-content-between mt-1 mb-0">
-                        <h4 className="my-0">{restaurant.name}</h4>
-                        <div className="mr-1 mt-1">{restaurant.rating ? <StarRating rating={restaurant.rating} /> : 'No Ratings'}</div>
+          <div className="home-map-info-container">
+            <div className="home-map-info">
+              {restaurants && (
+                <>
+                  {restaurants.map(restaurant => {
+                    let dollarAmount = ''
+                    for (var i = 0; i < restaurant.pricerange; i++) {
+                      dollarAmount += '$'
+                    }
+                    return (
+                      <div key={restaurant.id} className="border p-2 google-maps-result">
+                        <div className="d-flex justify-content-between mt-1 mb-0">
+                          <h4 className="my-0">{restaurant.name}</h4>
+                          <div className="mr-1 mt-1">{restaurant.rating ? <StarRating rating={restaurant.rating} /> : 'No Ratings'}</div>
+                        </div>
+                        <p className="m-0 mt-1">
+                          {restaurant.street}, <br /> {restaurant.city}, {restaurant.province}, {restaurant.country}
+                        </p>
+                        <div>
+                          <Link to={`/restaurant/${restaurant.id}`}>View Details</Link>
+                        </div>
                       </div>
-                      <p className="m-0 mt-1">
-                        {restaurant.street}, <br /> {restaurant.city}, {restaurant.province}, {restaurant.country}
-                      </p>
-                      <div>
-                        <Link to={`/restaurant/${restaurant.id}`}>View Details</Link>
-                      </div>
-                    </div>
-                  )
-                })}
-              </>
-            )}
+                    )
+                  })}
+                </>
+              )}
+            </div>
+            <button className="close-map-info-btn" onClick={() => toggleInfoTab()}>
+              <i className="fa fa-caret-right" aria-hidden="true"></i>
+            </button>
           </div>
           <HomeMap />
         </div>

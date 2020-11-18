@@ -31,7 +31,7 @@ function Header(props) {
     <>
       <nav className="navbar navbar-expand-xl navbar-dark bg-dark">
         <Link className="navbar-brand" to="/">
-          <i className="fa fa-ravelry" aria-hidden="true"></i>Yelp Clone
+          <i className="fa fa-ravelry" aria-hidden="true"></i>Review App
         </Link>
         <Searchbar />
         <button className="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,19 +40,35 @@ function Header(props) {
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ml-auto">
-            <li className={`nav-item ` + (page == 'home' ? 'active' : '')}>
+            <li className={`nav-item desktop-nav-item ` + (page == 'home' ? 'active' : '')}>
               <Link to="/" className="nav-link">
                 Home
               </Link>
             </li>
             {state.loggedIn && (
-              <li className={`nav-item ` + (page == 'create' ? 'active' : '')}>
+              <li className={`nav-item desktop-nav-item ` + (page == 'create' ? 'active' : '')}>
                 <Link to="/restaurant/create" className="nav-link">
                   Create Restaurant
                 </Link>
               </li>
             )}
-            <li className="nav-item">
+            <li className={`nav-item mobile-nav-item my-1 ` + (page == 'home' ? 'active' : '')}>
+              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <Link to="/" className="nav-link">
+                  Home
+                </Link>
+              </button>
+            </li>
+            {state.loggedIn && (
+              <li className={`nav-item mobile-nav-item my-1 ` + (page == 'create' ? 'active' : '')}>
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <Link to="/restaurant/create" className="nav-link">
+                    Create Restaurant
+                  </Link>
+                </button>
+              </li>
+            )}
+            <li className="nav-item my-1">
               <button className="btn btn-light" onClick={switchView}>
                 Switch View
               </button>
@@ -61,7 +77,7 @@ function Header(props) {
         </div>
       </nav>
       <div className="home-header">
-        <p>Click the switch button above to see the {state.loggedIn ? 'admin' : 'user'} view</p>
+        <p>Click the switch button in navbar to see the {state.loggedIn ? 'user' : 'admin'} view</p>
       </div>
     </>
   )
